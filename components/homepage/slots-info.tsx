@@ -1,84 +1,103 @@
-const SLOTS = [
+import {
+    ClockIcon,
+    MoonIcon,
+    SunIcon,
+} from "@heroicons/react/24/outline";
+import { type ComponentType, type SVGProps } from "react";
+
+type IconType = ComponentType<SVGProps<SVGSVGElement>>;
+
+const SLOTS: Array<{
+  label: string;
+  time: string;
+  cutoff: string;
+  Icon: IconType;
+  ring: string;
+  iconBg: string;
+  iconText: string;
+}> = [
   {
     label: "Morning",
     time: "5 – 10 AM",
     cutoff: "Order by 10 PM previous day",
-    emoji: "🌅",
-    bg: "bg-amber-50",
-    border: "border-amber-200",
-    accent: "text-amber-700",
+    Icon: SunIcon,
+    ring: "ring-amber-100",
+    iconBg: "bg-amber-50",
+    iconText: "text-amber-600",
   },
   {
     label: "Afternoon",
     time: "11 AM – 3 PM",
     cutoff: "Order by 8 AM same day",
-    emoji: "☀️",
-    bg: "bg-sky-50",
-    border: "border-sky-200",
-    accent: "text-sky-700",
+    Icon: SunIcon,
+    ring: "ring-orange-100",
+    iconBg: "bg-orange-50",
+    iconText: "text-orange-600",
   },
   {
     label: "Evening",
     time: "4 – 8 PM",
     cutoff: "Order by 12 PM same day",
-    emoji: "🌆",
-    bg: "bg-orange-50",
-    border: "border-orange-200",
-    accent: "text-orange-700",
+    Icon: ClockIcon,
+    ring: "ring-rose-100",
+    iconBg: "bg-rose-50",
+    iconText: "text-rose-600",
   },
   {
     label: "Night",
     time: "8 – 11 PM",
     cutoff: "Order by 4 PM same day",
-    emoji: "🌙",
-    bg: "bg-indigo-50",
-    border: "border-indigo-200",
-    accent: "text-indigo-700",
+    Icon: MoonIcon,
+    ring: "ring-indigo-100",
+    iconBg: "bg-indigo-50",
+    iconText: "text-indigo-600",
   },
-] as const;
+];
 
 export function SlotsInfo() {
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-14 lg:px-6">
-        <div className="mb-8 flex flex-col items-start justify-between gap-3 md:flex-row md:items-end">
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-orange-500">
-              How delivery works
-            </p>
-            <h2 className="text-2xl font-bold text-stone-900 sm:text-3xl">
-              Pick your slot at checkout
-            </h2>
-            <p className="mt-2 max-w-lg text-sm text-stone-500">
-              Browse freely. When you place an order, choose the time window
-              that suits you — your home chef will cook fresh and our partners
-              deliver inside that window.
-            </p>
-          </div>
+      <div className="mx-auto max-w-7xl px-4 py-14 lg:px-6 lg:py-20">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-orange-500">
+            How delivery works
+          </p>
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl lg:text-4xl">
+            Pick your slot at checkout
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-stone-500 sm:text-base">
+            Browse the marketplace freely. When you place an order, choose a
+            time window — your home chef will cook fresh and our delivery
+            partners arrive inside that window.
+          </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SLOTS.map((slot) => (
-            <div
+        <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {SLOTS.map((slot, idx) => (
+            <li
               key={slot.label}
-              className={`group relative overflow-hidden rounded-2xl border ${slot.border} ${slot.bg} p-5 transition-all hover:-translate-y-1 hover:shadow-md`}
+              className={`group relative overflow-hidden rounded-3xl bg-white p-6 ring-1 ${slot.ring} transition-all hover:-translate-y-1 hover:shadow-lg`}
             >
-              <div className="flex items-start justify-between">
-                <span className="text-4xl">{slot.emoji}</span>
-                <span className={`text-[10px] font-bold uppercase tracking-widest ${slot.accent}`}>
-                  Slot
-                </span>
-              </div>
-              <h3 className={`mt-4 text-lg font-bold ${slot.accent}`}>
+              <span className="absolute right-5 top-5 text-[11px] font-bold tracking-widest text-stone-300">
+                0{idx + 1}
+              </span>
+              <span
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl ${slot.iconBg}`}
+              >
+                <slot.Icon className={`h-6 w-6 ${slot.iconText}`} />
+              </span>
+              <h3 className="mt-5 text-lg font-bold text-stone-900">
                 {slot.label}
               </h3>
-              <p className="mt-1 text-sm font-medium text-stone-700">
+              <p className="mt-1 text-sm font-semibold text-stone-700">
                 {slot.time}
               </p>
-              <p className="mt-3 text-xs text-stone-500">{slot.cutoff}</p>
-            </div>
+              <p className="mt-3 text-xs leading-relaxed text-stone-500">
+                {slot.cutoff}
+              </p>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );

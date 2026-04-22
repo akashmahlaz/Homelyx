@@ -3,9 +3,22 @@
     "shop": "Shop",
     "tiffins": "Tiffins",
     "bakedGoods": "Baked Goods",
+    "curries": "Curries",
+    "snacks": "Snacks",
     "sell": "Sell with us",
     "cart": "Cart",
-    "search": "Search homemade food..."
+    "signIn": "Sign in",
+    "search": "Search homemade food, vendors, dishes...",
+    "searchPlaceholder": "Search homemade food, vendors, dishes...",
+    "deliverTo": "Deliver to",
+    "selectLocation": "Set your pincode",
+    "announcement": "Free delivery on orders above ₹499 · Cooked fresh in real home kitchens",
+    "menu": "Menu",
+    "close": "Close",
+    "browse": "Browse",
+    "orders": "My Orders",
+    "account": "Account",
+    "language": "Language"
   },
   "hero": {
     "title": "Fresh Homemade Food, On Your Schedule",

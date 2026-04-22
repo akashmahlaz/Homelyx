@@ -4,7 +4,8 @@ export type Vendor = {
   specialty: string;
   location: string;
   city: string;
-  emoji: string;
+  image: string;
+  avatar: string;
   rating: string;
   orders: string;
   tag: string;
@@ -25,18 +26,22 @@ export const VENDORS: Vendor[] = [
     specialty: "South Indian Tiffins",
     location: "Jayanagar, Bengaluru",
     city: "Bengaluru",
-    emoji: "🍽️",
+    image:
+      "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80",
     rating: "4.9",
     orders: "200+",
     tag: "Top Rated",
     tagColor: "bg-amber-100 text-amber-700",
-    headline: "Authentic South Indian breakfasts, made fresh every morning",
+    headline:
+      "Authentic South Indian breakfasts, made fresh every morning",
     story:
-      "Meera has been cooking traditional South Indian food for 22 years. What started as feeding her family of six turned into a full-time passion when her neighbours started placing daily orders. She wakes up at 4 AM every morning to grind fresh idli batter, steam hot vadas, and pack piping-hot sambar into dabbas before the sun comes up. Every dish carries the warmth of a home kitchen — no shortcuts, no preservatives, just love.",
+      "Meera has been cooking traditional South Indian food for 22 years. What started as feeding her family of six turned into a full-time passion when her neighbours started placing daily orders.",
     since: "2021",
     items: ["Idli & Sambar", "Masala Dosa", "Rava Upma", "Pongal", "Vada"],
     slots: ["Morning"],
-    badges: ["🌿 No preservatives", "🕐 Same-day prep", "🏠 Home kitchen"],
+    badges: ["No preservatives", "Same-day prep", "Home kitchen"],
     searchCollection: "tiffins",
   },
   {
@@ -45,14 +50,18 @@ export const VENDORS: Vendor[] = [
     specialty: "Artisan Breads & Cakes",
     location: "Bandra, Mumbai",
     city: "Mumbai",
-    emoji: "🥐",
+    image:
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
     rating: "4.8",
     orders: "150+",
     tag: "Trending",
     tagColor: "bg-orange-100 text-orange-700",
-    headline: "Slow-fermented sourdoughs and celebration cakes from a home oven",
+    headline:
+      "Slow-fermented sourdoughs and celebration cakes from a home oven",
     story:
-      "Pooja left her corporate job in 2020 to pursue what she calls 'the most honest craft' — baking. Trained at a patisserie school in Pune, she now runs The Bake Shack from her apartment kitchen in Bandra. Her sourdough starter, named 'Bruno', is three years old. Every loaf is cold-fermented for 24 hours and baked in a cast-iron pot. She takes custom cake orders two weeks in advance and never compromises on real butter, fresh eggs, and unbleached flour.",
+      "Pooja left her corporate job in 2020 to pursue what she calls 'the most honest craft' — baking. Trained at a patisserie school in Pune, she now runs The Bake Shack from her apartment kitchen.",
     since: "2020",
     items: [
       "Country Sourdough",
@@ -62,7 +71,7 @@ export const VENDORS: Vendor[] = [
       "Baguettes",
     ],
     slots: ["Morning", "Afternoon"],
-    badges: ["🧈 Real butter", "🥚 Farm eggs", "⏰ 24h ferment"],
+    badges: ["Real butter", "Farm eggs", "24h ferment"],
     searchCollection: "baked-goods",
   },
   {
@@ -71,14 +80,18 @@ export const VENDORS: Vendor[] = [
     specialty: "Homemade Preserves",
     location: "T. Nagar, Chennai",
     city: "Chennai",
-    emoji: "🫙",
+    image:
+      "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80",
     rating: "5.0",
     orders: "100+",
     tag: "Fan Favourite",
-    tagColor: "bg-green-100 text-green-700",
-    headline: "Traditional Tamil pickle recipes passed down three generations",
+    tagColor: "bg-emerald-100 text-emerald-700",
+    headline:
+      "Traditional Tamil pickle recipes passed down three generations",
     story:
-      "Priya learned to make pickles from her grandmother, who would spend entire summers pickling raw mangoes, gooseberries, and dried chilies. Armed with a spiral notebook full of handwritten recipes and a fierce commitment to using no artificial preservatives, Priya ships her jars across India. Each batch is sun-dried for 2–3 days before mixing and sealed in airtight glass jars. Her mango thokku regularly sells out within hours of being listed.",
+      "Priya learned to make pickles from her grandmother. Each batch is sun-dried for 2–3 days before mixing and sealed in airtight glass jars. Her mango thokku regularly sells out within hours.",
     since: "2022",
     items: [
       "Mango Thokku",
@@ -88,7 +101,7 @@ export const VENDORS: Vendor[] = [
       "Garlic Pickle",
     ],
     slots: ["Afternoon", "Evening"],
-    badges: ["☀️ Sun-dried", "🚫 No preservatives", "🫙 Glass jars"],
+    badges: ["Sun-dried", "No preservatives", "Glass jars"],
     searchCollection: "pickles",
   },
   {
@@ -97,14 +110,18 @@ export const VENDORS: Vendor[] = [
     specialty: "North Indian Curries",
     location: "Lajpat Nagar, Delhi",
     city: "Delhi",
-    emoji: "🍛",
+    image:
+      "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80",
+    avatar:
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80",
     rating: "4.7",
     orders: "180+",
     tag: "New Arrival",
     tagColor: "bg-sky-100 text-sky-700",
-    headline: "Comforting North Indian curries that taste like Dilli ki maa ka khana",
+    headline:
+      "Comforting North Indian curries that taste like Dilli ki maa ka khana",
     story:
-      "Sunita Devi has been cooking Punjabi food for 30 years, but only started selling it in 2023. Her rajma-chawal became the stuff of legend in her apartment complex — neighbours would knock with steel tiffins, hoping for leftovers. Today she runs Rajma House with her daughter Neha, who handles the orders while Sunita manages the cooking. The rajma soaks overnight and simmers for four hours in a pressure cooker on a wood-charcoal stove for that unmistakeable smoky depth.",
+      "Sunita Devi has been cooking Punjabi food for 30 years. The rajma soaks overnight and simmers for four hours for that unmistakeable smoky depth.",
     since: "2023",
     items: [
       "Rajma Chawal",
@@ -114,7 +131,7 @@ export const VENDORS: Vendor[] = [
       "Aloo Paratha",
     ],
     slots: ["Afternoon", "Evening", "Night"],
-    badges: ["🔥 Slow cooked", "🌾 Whole spices", "🏠 Home kitchen"],
+    badges: ["Slow cooked", "Whole spices", "Home kitchen"],
     searchCollection: "curries",
   },
 ];
