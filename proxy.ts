@@ -4,15 +4,15 @@ const SUPPORTED_LOCALES = ["en", "hi"] as const;
 const DEFAULT_LOCALE = "en";
 
 /**
- * Lightweight locale middleware.
+ * Lightweight locale proxy.
  *
- * We deliberately do NOT use next-intl's routing middleware because we are not
+ * We deliberately do NOT use next-intl's routing proxy because we are not
  * using a [locale] segment in the App Router (avoids breaking SSR routes).
  *
  * Instead we read Accept-Language on first visit and set a `locale` cookie that
  * `i18n/request.ts` consumes to load the right messages.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   const existing = request.cookies.get("locale")?.value;

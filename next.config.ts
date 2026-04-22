@@ -1,36 +1,24 @@
-import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin({
   requestConfig: "./i18n/request.ts",
 });
 
 const nextConfig: NextConfig = {
-  experimental: {
-    ppr: true,
-    inlineCss: true,
-    useCache: true,
-  },
   images: {
     formats: ["image/avif", "image/webp"] as const,
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "cdn.shopify.com",
-        pathname: "/s/files/**",
+        hostname: "*",
+        pathname: "/**",
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
+        protocol: "http",
+        hostname: "*",
       },
-      {
-        protocol: "https",
-        hostname: "picsum.photos",
-      },
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-      },
+      
     ],
   },
 };

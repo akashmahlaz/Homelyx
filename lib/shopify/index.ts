@@ -1,9 +1,5 @@
 import { TAGS } from "lib/constants";
-import {
-    unstable_cacheLife as cacheLife,
-    unstable_cacheTag as cacheTag,
-    revalidateTag,
-} from "next/cache";
+import { revalidateTag } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -632,10 +628,6 @@ export async function updateCart(
 }
 
 export async function getCart(): Promise<Cart | undefined> {
-  "use cache: private";
-  cacheTag(TAGS.cart);
-  cacheLife("seconds");
-
   const cartId = (await cookies()).get("cartId")?.value;
   if (!cartId) {
     return undefined;
@@ -647,10 +639,6 @@ export async function getCart(): Promise<Cart | undefined> {
 export async function getCollection(
   handle: string
 ): Promise<Collection | undefined> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  cacheLife("days");
-
   if (!handle) {
     return COLLECTIONS.find((item) => item.handle === "");
   }
@@ -667,27 +655,15 @@ export async function getCollectionProducts({
   reverse?: boolean;
   sortKey?: string;
 }): Promise<Product[]> {
-  "use cache";
-  cacheTag(TAGS.collections, TAGS.products);
-  cacheLife("days");
-
   const products = getProductsByCollectionHandle(collection);
   return sortProducts(products, sortKey, reverse);
 }
 
 export async function getCollections(): Promise<Collection[]> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  cacheLife("days");
-
   return COLLECTIONS.filter((collection) => !collection.handle.startsWith("hidden"));
 }
 
 export async function getMenu(handle: string): Promise<Menu[]> {
-  "use cache";
-  cacheTag(TAGS.collections);
-  cacheLife("days");
-
   if (handle.includes("footer")) {
     return FOOTER_MENU;
   }
@@ -718,20 +694,12 @@ export async function getPages(): Promise<Page[]> {
 }
 
 export async function getProduct(handle: string): Promise<Product | undefined> {
-  "use cache";
-  cacheTag(TAGS.products);
-  cacheLife("days");
-
   return PRODUCT_CATALOG.find((product) => product.handle === handle);
 }
 
 export async function getProductRecommendations(
   productId: string
 ): Promise<Product[]> {
-  "use cache";
-  cacheTag(TAGS.products);
-  cacheLife("days");
-
   return PRODUCT_CATALOG.filter((product) => product.id !== productId).slice(0, 5);
 }
 
@@ -744,10 +712,6 @@ export async function getProducts({
   reverse?: boolean;
   sortKey?: string;
 }): Promise<Product[]> {
-  "use cache";
-  cacheTag(TAGS.products);
-  cacheLife("days");
-
   const filtered = filterProductsByQuery(PRODUCT_CATALOG, query);
   return sortProducts(filtered, sortKey, reverse);
 }
