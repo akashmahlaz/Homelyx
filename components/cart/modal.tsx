@@ -8,7 +8,7 @@ import { DEFAULT_OPTION } from "lib/constants";
 import { createUrl } from "lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createCartAndSetCookie, redirectToCheckout } from "./actions";
 import { useCart } from "./cart-context";
@@ -21,10 +21,18 @@ type MerchandiseSearchParams = {
   [key: string]: string;
 };
 
+const SLOTS = [
+  { id: "morning", label: "Morning", time: "5–10 AM", emoji: "🌅", bg: "bg-amber-50", border: "border-amber-200", selectedBg: "bg-amber-500", labelColor: "text-amber-700" },
+  { id: "afternoon", label: "Afternoon", time: "11 AM–3 PM", emoji: "☀️", bg: "bg-sky-50", border: "border-sky-200", selectedBg: "bg-sky-500", labelColor: "text-sky-700" },
+  { id: "evening", label: "Evening", time: "4–8 PM", emoji: "🌆", bg: "bg-orange-50", border: "border-orange-200", selectedBg: "bg-orange-500", labelColor: "text-orange-700" },
+  { id: "night", label: "Night", time: "8–11 PM", emoji: "🌙", bg: "bg-indigo-50", border: "border-indigo-200", selectedBg: "bg-indigo-600", labelColor: "text-indigo-700" },
+];
+
 export default function CartModal() {
   const { cart, updateCartItem } = useCart();
   const { isOpen, openCart, closeCart } = useCartUI();
   const quantityRef = useRef(cart?.totalQuantity);
+  const [selectedSlot, setSelectedSlot] = useState<string>("evening");
 
   useEffect(() => {
     if (!cart) {
@@ -46,6 +54,10 @@ export default function CartModal() {
   }, [isOpen, cart?.totalQuantity, quantityRef, openCart]);
 
   const total = parseFloat(cart?.cost?.totalAmount?.amount ?? "0");
+  const deliveryFee = total >= 499 ? 0 : 49;
+  const grandTotal = total + deliveryFee;
+
+  const activeSlot = SLOTS.find((s) => s.id === selectedSlot);
 
   return (
     <>
@@ -74,7 +86,7 @@ export default function CartModal() {
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <Dialog.Panel className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l border-orange-100 bg-orange-50 shadow-2xl md:w-[400px]">
+            <Dialog.Panel className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l border-orange-100 bg-orange-50 shadow-2xl md:w-[420px]">
               {/* Header */}
               <div className="flex shrink-0 items-center justify-between border-b border-orange-100 bg-white px-5 py-4">
                 <div className="flex items-center gap-2">
@@ -176,6 +188,42 @@ export default function CartModal() {
                       })}
                   </ul>
 
+                  {/* Slot selector */}
+                  <div className="shrink-0 border-t border-orange-100 bg-white px-4 py-4">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-stone-400">
+                      Choose delivery slot
+                    </p>
+                    <div className="grid grid-cols-4 gap-2">
+                      {SLOTS.map((slot) => {
+                        const isSelected = selectedSlot === slot.id;
+                        return (
+                          <button
+                            key={slot.id}
+                            onClick={() => setSelectedSlot(slot.id)}
+                            className={`flex flex-col items-center rounded-xl border-2 p-2 transition-all ${
+                              isSelected
+                                ? `${slot.selectedBg} border-transparent text-white`
+                                : `${slot.bg} ${slot.border} hover:shadow-sm`
+                            }`}
+                          >
+                            <span className="text-lg">{slot.emoji}</span>
+                            <span className={`text-[10px] font-bold ${isSelected ? "text-white" : slot.labelColor}`}>
+                              {slot.label}
+                            </span>
+                            <span className={`text-[9px] ${isSelected ? "text-white/80" : "text-stone-400"}`}>
+                              {slot.time}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {activeSlot && (
+                      <p className="mt-2 text-center text-xs text-stone-500">
+                        Selected: <span className="font-semibold text-orange-600">{activeSlot.label} ({activeSlot.time})</span>
+                      </p>
+                    )}
+                  </div>
+
                   {/* Free delivery nudge */}
                   <div className="shrink-0 px-4 pb-3">
                     {total < 499 ? (
@@ -199,21 +247,18 @@ export default function CartModal() {
                         <Price className="font-medium text-stone-700" amount={cart.cost.subtotalAmount.amount} currencyCode={cart.cost.subtotalAmount.currencyCode} />
                       </div>
                       <div className="flex items-center justify-between">
-                        <span>GST (5%)</span>
-                        <Price className="font-medium text-stone-700" amount={cart.cost.totalTaxAmount.amount} currencyCode={cart.cost.totalTaxAmount.currencyCode} />
-                      </div>
-                      <div className="flex items-center justify-between">
                         <span>Delivery</span>
-                        <span className={total >= 499 ? "font-medium text-green-600" : "font-medium text-stone-700"}>
-                          {total >= 499 ? "Free" : "₹49"}
+                        <span className={deliveryFee === 0 ? "font-medium text-green-600" : "font-medium text-stone-700"}>
+                          {deliveryFee === 0 ? "Free" : `₹${deliveryFee}`}
                         </span>
                       </div>
                       <div className="flex items-center justify-between border-t border-stone-100 pt-2 text-base font-bold text-stone-900">
                         <span>Total</span>
-                        <Price className="text-orange-500" amount={cart.cost.totalAmount.amount} currencyCode={cart.cost.totalAmount.currencyCode} />
+                        <span className="text-orange-500">₹{grandTotal.toFixed(0)}</span>
                       </div>
                     </div>
                     <form action={redirectToCheckout} className="mt-4">
+                      <input type="hidden" name="slot" value={selectedSlot} />
                       <CheckoutButton />
                     </form>
                     <button onClick={closeCart} className="mt-2 w-full py-1.5 text-center text-xs text-stone-400 transition-colors hover:text-stone-600">

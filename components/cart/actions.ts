@@ -95,24 +95,24 @@ export async function updateItemQuantity(
   }
 }
 
-export async function redirectToCheckout() {
-  if (!process.env.SHOPIFY_STORE_DOMAIN) {
-    return;
+export async function redirectToCheckout(formData: FormData) {
+  const slot = formData.get("slot") as string | null;
+
+  // Store the selected slot in a cookie
+  if (slot) {
+    (await cookies()).set("selectedSlot", slot, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24, // 1 day
+    });
   }
 
-  const cart = await getCart();
-  if (!cart?.checkoutUrl) {
-    return;
-  }
-
-  redirect(cart.checkoutUrl);
+  // Redirect to checkout page
+  redirect("/checkout");
 }
 
 export async function createCartAndSetCookie() {
-  if (!process.env.SHOPIFY_STORE_DOMAIN) {
-    return;
-  }
-
   try {
     const cart = await createCart();
     if (cart?.id) {

@@ -1,81 +1,210 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Order Placed – Homelyx",
-  description: "Your Homelyx order has been placed successfully.",
-};
+const SLOTS = [
+  { id: "morning", label: "Morning", time: "5–10 AM", emoji: "🌅" },
+  { id: "afternoon", label: "Afternoon", time: "11 AM–3 PM", emoji: "☀️" },
+  { id: "evening", label: "Evening", time: "4–8 PM", emoji: "🌆" },
+  { id: "night", label: "Night", time: "8–11 PM", emoji: "🌙" },
+];
 
-export default function CheckoutPage() {
+export default async function CheckoutPage() {
+  const cookieStore = await cookies();
+  const selectedSlot = cookieStore.get("selectedSlot")?.value || "evening";
+  const slot = SLOTS.find((s) => s.id === selectedSlot) || SLOTS[2];
+
   return (
-    <div className="min-h-screen bg-orange-50 px-4 py-16 lg:px-6">
-      <div className="mx-auto max-w-xl">
-        {/* Success card */}
-        <div className="rounded-3xl border border-orange-100 bg-white p-8 shadow-sm text-center">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-            <svg className="h-10 w-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-extrabold text-stone-900">Order placed! 🎉</h1>
-          <p className="mt-2 text-stone-500">
-            Thank you for ordering from Homelyx. Your home chef is already preparing your meal.
-          </p>
+    <div className="min-h-screen bg-orange-50 px-4 py-8 lg:px-6">
+      <div className="mx-auto max-w-6xl">
+        <h1 className="mb-8 text-3xl font-bold text-stone-900">Checkout</h1>
 
-          {/* Order details */}
-          <div className="mt-8 rounded-2xl border border-stone-100 bg-stone-50 p-5 text-left space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-stone-500">Order ID</span>
-              <span className="font-mono font-semibold text-stone-800">#HLX-{Math.floor(100000 + Math.random() * 900000)}</span>
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Left: Forms */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Delivery Address */}
+            <div className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-lg font-bold text-stone-900">Delivery Address</h2>
+              <form className="space-y-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-stone-600">Full Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Priya Sharma"
+                      className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-stone-600">Phone Number</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="+91 98765 43210"
+                      className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-stone-600">Address Line 1</label>
+                  <input
+                    type="text"
+                    name="address1"
+                    placeholder="42, MG Road, Indiranagar"
+                    className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-stone-600">Address Line 2</label>
+                  <input
+                    type="text"
+                    name="address2"
+                    placeholder="Near Metro Station"
+                    className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-stone-600">Landmark (optional)</label>
+                    <input
+                      type="text"
+                      name="landmark"
+                      placeholder="Opposite Park"
+                      className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-stone-600">Pincode</label>
+                    <input
+                      type="text"
+                      name="pincode"
+                      placeholder="560001"
+                      className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                      required
+                    />
+                  </div>
+                </div>
+              </form>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-stone-500">Delivery slot</span>
-              <span className="font-semibold text-stone-800">Morning (8 AM – 11 AM)</span>
+
+            {/* Delivery Slot */}
+            <div className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-lg font-bold text-stone-900">Delivery Slot</h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {SLOTS.map((s) => {
+                  const isSelected = s.id === selectedSlot;
+                  return (
+                    <div
+                      key={s.id}
+                      className={`flex flex-col items-center rounded-xl border-2 p-3 transition-all ${
+                        isSelected
+                          ? "border-orange-500 bg-orange-50"
+                          : "border-stone-100 hover:border-stone-200"
+                      }`}
+                    >
+                      <span className="text-2xl">{s.emoji}</span>
+                      <span className={`mt-1 text-sm font-bold ${isSelected ? "text-orange-600" : "text-stone-700"}`}>
+                        {s.label}
+                      </span>
+                      <span className="text-xs text-stone-500">{s.time}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="mt-3 text-sm text-stone-500">
+                Your order will be delivered during <span className="font-semibold text-orange-600">{slot?.label ?? "Evening"} ({slot?.time ?? "4-8 PM"})</span>
+              </p>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-stone-500">Payment</span>
-              <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">Confirmed</span>
+
+            {/* Payment Method */}
+            <div className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-lg font-bold text-stone-900">Payment Method</h2>
+              <div className="space-y-3">
+                <label className="flex cursor-pointer items-center gap-4 rounded-xl border-2 border-orange-500 bg-orange-50 p-4 transition-all">
+                  <input type="radio" name="payment" value="razorpay" defaultChecked className="h-5 w-5 text-orange-500" />
+                  <div className="flex-1">
+                    <span className="font-semibold text-stone-900">Pay Online (Razorpay)</span>
+                    <p className="text-sm text-stone-500">UPI, Cards, Netbanking</p>
+                  </div>
+                  <span className="text-xs font-medium text-green-600">Recommended</span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-4 rounded-xl border-2 border-stone-100 p-4 transition-all hover:border-stone-200">
+                  <input type="radio" name="payment" value="cod" className="h-5 w-5 text-orange-500" />
+                  <div className="flex-1">
+                    <span className="font-semibold text-stone-900">Cash on Delivery</span>
+                    <p className="text-sm text-stone-500">+₹49 COD handling fee</p>
+                  </div>
+                </label>
+              </div>
             </div>
           </div>
 
-          {/* What happens next */}
-          <div className="mt-6 rounded-2xl border border-orange-100 bg-orange-50 p-5 text-left">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-orange-500">What happens next</p>
-            <ol className="space-y-2 text-sm text-stone-600">
-              <li className="flex items-start gap-2">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-700">1</span>
-                Your home chef confirms the order and starts cooking.
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-700">2</span>
-                You get an SMS notification 30 min before delivery.
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-700">3</span>
-                Fresh food arrives at your door during your chosen slot.
-              </li>
-            </ol>
-          </div>
+          {/* Right: Order Summary */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-24 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-lg font-bold text-stone-900">Order Summary</h2>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            <Link
-              href="/search"
-              className="rounded-xl bg-orange-500 px-5 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-orange-600"
-            >
-              Order more food
-            </Link>
-            <Link
-              href="/"
-              className="rounded-xl border border-stone-200 px-5 py-3 text-center text-sm font-semibold text-stone-700 transition-colors hover:bg-stone-50"
-            >
-              Back to Home
-            </Link>
+              {/* Order items placeholder */}
+              <div className="space-y-3 border-b border-stone-100 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-lg bg-orange-50 text-xl">🍛</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-stone-800">Paneer Butter Masala</p>
+                    <p className="text-xs text-stone-400">Qty: 1</p>
+                  </div>
+                  <span className="text-sm font-bold text-stone-800">₹259</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-lg bg-orange-50 text-xl">🫓</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-stone-800">Garlic Naan</p>
+                    <p className="text-xs text-stone-400">Qty: 2</p>
+                  </div>
+                  <span className="text-sm font-bold text-stone-800">₹120</span>
+                </div>
+              </div>
+
+              {/* Price breakdown */}
+              <div className="space-y-2 border-b border-stone-100 py-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Subtotal</span>
+                  <span className="font-medium text-stone-700">₹379</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Delivery</span>
+                  <span className="font-medium text-green-600">Free</span>
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="flex justify-between py-4 text-lg font-bold">
+                <span className="text-stone-900">Total</span>
+                <span className="text-orange-600">₹379</span>
+              </div>
+
+              {/* Place Order Button */}
+              <button className="w-full rounded-full bg-orange-500 py-4 text-base font-bold text-white transition hover:bg-orange-600">
+                Pay ₹379 →
+              </button>
+
+              {/* Trust indicator */}
+              <p className="mt-4 text-center text-xs text-stone-400">
+                🔒 Secured by Razorpay
+              </p>
+
+              {/* Back to cart link */}
+              <Link
+                href="/"
+                className="mt-4 flex items-center justify-center gap-1 text-sm text-stone-500 hover:text-orange-500"
+              >
+                ← Continue shopping
+              </Link>
+            </div>
           </div>
         </div>
-
-        {/* Rate nudge */}
-        <p className="mt-6 text-center text-xs text-stone-400">
-          After delivery, you&apos;ll receive a link to rate your home chef. Your feedback helps the community grow.
-        </p>
       </div>
     </div>
   );

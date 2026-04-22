@@ -1,7 +1,7 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 const SUPPORTED = ["en", "hi"] as const;
 type Locale = (typeof SUPPORTED)[number];
