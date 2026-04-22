@@ -1,13 +1,20 @@
 "use client";
 
 import { Dialog, Transition } from "@headlessui/react";
-import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+    ClockIcon,
+    MoonIcon,
+    ShoppingCartIcon,
+    SunIcon,
+    XMarkIcon,
+} from "@heroicons/react/24/outline";
 import LoadingDots from "components/loading-dots";
 import Price from "components/price";
 import { DEFAULT_OPTION } from "lib/constants";
 import { createUrl } from "lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import type { ComponentType, SVGProps } from "react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createCartAndSetCookie, redirectToCheckout } from "./actions";
@@ -21,11 +28,22 @@ type MerchandiseSearchParams = {
   [key: string]: string;
 };
 
-const SLOTS = [
-  { id: "morning", label: "Morning", time: "5–10 AM", emoji: "🌅", bg: "bg-amber-50", border: "border-amber-200", selectedBg: "bg-amber-500", labelColor: "text-amber-700" },
-  { id: "afternoon", label: "Afternoon", time: "11 AM–3 PM", emoji: "☀️", bg: "bg-sky-50", border: "border-sky-200", selectedBg: "bg-sky-500", labelColor: "text-sky-700" },
-  { id: "evening", label: "Evening", time: "4–8 PM", emoji: "🌆", bg: "bg-orange-50", border: "border-orange-200", selectedBg: "bg-orange-500", labelColor: "text-orange-700" },
-  { id: "night", label: "Night", time: "8–11 PM", emoji: "🌙", bg: "bg-indigo-50", border: "border-indigo-200", selectedBg: "bg-indigo-600", labelColor: "text-indigo-700" },
+type Slot = {
+  id: string;
+  label: string;
+  time: string;
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+  bg: string;
+  border: string;
+  selectedBg: string;
+  labelColor: string;
+};
+
+const SLOTS: Slot[] = [
+  { id: "morning", label: "Morning", time: "5–10 AM", Icon: SunIcon, bg: "bg-amber-50", border: "border-amber-200", selectedBg: "bg-amber-500", labelColor: "text-amber-700" },
+  { id: "afternoon", label: "Afternoon", time: "11 AM–3 PM", Icon: SunIcon, bg: "bg-sky-50", border: "border-sky-200", selectedBg: "bg-sky-500", labelColor: "text-sky-700" },
+  { id: "evening", label: "Evening", time: "4–8 PM", Icon: ClockIcon, bg: "bg-orange-50", border: "border-orange-200", selectedBg: "bg-orange-500", labelColor: "text-orange-700" },
+  { id: "night", label: "Night", time: "8–11 PM", Icon: MoonIcon, bg: "bg-indigo-50", border: "border-indigo-200", selectedBg: "bg-indigo-600", labelColor: "text-indigo-700" },
 ];
 
 export default function CartModal() {
@@ -206,7 +224,7 @@ export default function CartModal() {
                                 : `${slot.bg} ${slot.border} hover:shadow-sm`
                             }`}
                           >
-                            <span className="text-lg">{slot.emoji}</span>
+                            <slot.Icon className={`h-4 w-4 ${isSelected ? "text-white" : slot.labelColor}`} />
                             <span className={`text-[10px] font-bold ${isSelected ? "text-white" : slot.labelColor}`}>
                               {slot.label}
                             </span>
@@ -230,11 +248,11 @@ export default function CartModal() {
                       <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-center text-xs text-amber-700">
                         Add{" "}
                         <span className="font-bold">₹{(499 - total).toFixed(0)}</span>{" "}
-                        more for free delivery 🚚
+                        more for free delivery
                       </div>
                     ) : (
                       <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-2 text-center text-xs font-medium text-green-700">
-                        🎉 You&apos;ve unlocked free delivery!
+                        You&apos;ve unlocked free delivery!
                       </div>
                     )}
                   </div>

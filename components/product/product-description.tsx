@@ -59,12 +59,19 @@ export function ProductDescription({ product }: { product: Product }) {
 
       {/* Trust badges */}
       <div className="mb-5 flex flex-wrap gap-2">
-        {["🏠 Home-cooked", "🌿 No preservatives", "⚡ Fresh daily"].map((badge) => (
+        {[
+          { label: "Home-cooked", d: "M12 2 2 11h3v10h6v-6h2v6h6V11h3z" },
+          { label: "No preservatives", d: "M12 2C8 6 6 9 6 13a6 6 0 0 0 12 0c0-4-2-7-6-11z" },
+          { label: "Fresh daily", d: "M13 2 4 14h7l-1 8 9-12h-7z" },
+        ].map((badge) => (
           <span
-            key={badge}
-            className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600"
+            key={badge.label}
+            className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1 text-xs font-medium text-stone-600"
           >
-            {badge}
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-orange-500" fill="currentColor" aria-hidden>
+              <path d={badge.d} />
+            </svg>
+            {badge.label}
           </span>
         ))}
       </div>

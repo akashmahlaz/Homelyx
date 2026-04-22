@@ -51,8 +51,14 @@ export default async function CategoryPage(props: {
       )}
       {products.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <p className="text-5xl">🍽️</p>
-          <p className="mt-4 text-lg font-semibold text-stone-800">No items in this category yet</p>
+          <div className="relative h-32 w-32 overflow-hidden rounded-full ring-4 ring-orange-50">
+            <img
+              src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=300&q=80"
+              alt="Empty plate"
+              className="h-full w-full object-cover opacity-70"
+            />
+          </div>
+          <p className="mt-5 text-lg font-semibold text-stone-800">No items in this category yet</p>
           <p className="mt-1 text-sm text-stone-400">Check back soon!</p>
         </div>
       ) : (

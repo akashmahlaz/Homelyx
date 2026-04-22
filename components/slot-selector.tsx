@@ -1,5 +1,11 @@
 "use client";
 
+import {
+    ArrowRightIcon,
+    ClockIcon,
+    MoonIcon,
+    SunIcon,
+} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { useState } from "react";
 
@@ -9,7 +15,7 @@ const SLOTS = [
     label: "Morning",
     time: "5 AM – 10 AM",
     cutoff: "Order by 10 PM prev. night",
-    emoji: "🌅",
+    Icon: SunIcon,
     bg: "bg-amber-50",
     border: "border-amber-200",
     selectedBg: "bg-amber-500",
@@ -21,7 +27,7 @@ const SLOTS = [
     label: "Afternoon",
     time: "11 AM – 3 PM",
     cutoff: "Order by 8 AM same day",
-    emoji: "☀️",
+    Icon: SunIcon,
     bg: "bg-sky-50",
     border: "border-sky-200",
     selectedBg: "bg-sky-500",
@@ -33,7 +39,7 @@ const SLOTS = [
     label: "Evening",
     time: "4 PM – 8 PM",
     cutoff: "Order by 12 PM same day",
-    emoji: "🌆",
+    Icon: ClockIcon,
     bg: "bg-orange-50",
     border: "border-orange-200",
     selectedBg: "bg-orange-500",
@@ -45,7 +51,7 @@ const SLOTS = [
     label: "Night",
     time: "8 PM – 11 PM",
     cutoff: "Order by 4 PM same day",
-    emoji: "🌙",
+    Icon: MoonIcon,
     bg: "bg-indigo-50",
     border: "border-indigo-200",
     selectedBg: "bg-indigo-600",
@@ -79,7 +85,19 @@ export default function SlotSelector() {
                   : `${slot.bg} ${slot.border} hover:shadow-md hover:scale-[1.01]`,
               )}
             >
-              <span className="mb-2 text-2xl">{slot.emoji}</span>
+              <span
+                className={clsx(
+                  "mb-2 flex h-9 w-9 items-center justify-center rounded-xl",
+                  isSelected ? "bg-white/20" : "bg-white/70",
+                )}
+              >
+                <slot.Icon
+                  className={clsx(
+                    "h-5 w-5",
+                    isSelected ? "text-white" : slot.labelColor,
+                  )}
+                />
+              </span>
               <span
                 className={clsx(
                   "text-sm font-bold",
@@ -120,7 +138,7 @@ export default function SlotSelector() {
           className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-md transition-colors hover:bg-orange-600"
         >
           Browse {activeSlot?.label} delivery
-          <span aria-hidden>→</span>
+          <ArrowRightIcon className="h-4 w-4" />
         </a>
         <span className="text-xs text-stone-400">{activeSlot?.cutoff}</span>
       </div>

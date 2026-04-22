@@ -1,11 +1,27 @@
+import {
+    ArrowRightIcon,
+    ClockIcon,
+    LockClosedIcon,
+    MoonIcon,
+    SunIcon,
+} from "@heroicons/react/24/outline";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import type { ComponentType, SVGProps } from "react";
 
-const SLOTS = [
-  { id: "morning", label: "Morning", time: "5–10 AM", emoji: "🌅" },
-  { id: "afternoon", label: "Afternoon", time: "11 AM–3 PM", emoji: "☀️" },
-  { id: "evening", label: "Evening", time: "4–8 PM", emoji: "🌆" },
-  { id: "night", label: "Night", time: "8–11 PM", emoji: "🌙" },
+type Slot = {
+  id: string;
+  label: string;
+  time: string;
+  Icon: ComponentType<SVGProps<SVGSVGElement>>;
+  tint: string;
+};
+
+const SLOTS: Slot[] = [
+  { id: "morning", label: "Morning", time: "5–10 AM", Icon: SunIcon, tint: "text-amber-600 bg-amber-50" },
+  { id: "afternoon", label: "Afternoon", time: "11 AM–3 PM", Icon: SunIcon, tint: "text-sky-600 bg-sky-50" },
+  { id: "evening", label: "Evening", time: "4–8 PM", Icon: ClockIcon, tint: "text-orange-600 bg-orange-50" },
+  { id: "night", label: "Night", time: "8–11 PM", Icon: MoonIcon, tint: "text-indigo-600 bg-indigo-50" },
 ];
 
 export default async function CheckoutPage() {
@@ -105,7 +121,9 @@ export default async function CheckoutPage() {
                           : "border-stone-100 hover:border-stone-200"
                       }`}
                     >
-                      <span className="text-2xl">{s.emoji}</span>
+                      <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.tint}`}>
+                        <s.Icon className="h-5 w-5" />
+                      </span>
                       <span className={`mt-1 text-sm font-bold ${isSelected ? "text-orange-600" : "text-stone-700"}`}>
                         {s.label}
                       </span>
@@ -147,24 +165,37 @@ export default async function CheckoutPage() {
             <div className="sticky top-24 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
               <h2 className="mb-4 text-lg font-bold text-stone-900">Order Summary</h2>
 
-              {/* Order items placeholder */}
+              {/* Order items */}
               <div className="space-y-3 border-b border-stone-100 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-lg bg-orange-50 text-xl">🍛</div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-stone-800">Paneer Butter Masala</p>
-                    <p className="text-xs text-stone-400">Qty: 1</p>
+                {[
+                  {
+                    name: "Paneer Butter Masala",
+                    qty: 1,
+                    price: "₹259",
+                    img: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=200&q=80",
+                  },
+                  {
+                    name: "Garlic Naan",
+                    qty: 2,
+                    price: "₹120",
+                    img: "https://images.unsplash.com/photo-1619471493624-e76d00b39d6c?auto=format&fit=crop&w=200&q=80",
+                  },
+                ].map((item) => (
+                  <div key={item.name} className="flex items-center gap-3">
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg ring-1 ring-stone-200">
+                      <img
+                        src={item.img}
+                        alt={item.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-stone-800">{item.name}</p>
+                      <p className="text-xs text-stone-400">Qty: {item.qty}</p>
+                    </div>
+                    <span className="text-sm font-bold text-stone-800">{item.price}</span>
                   </div>
-                  <span className="text-sm font-bold text-stone-800">₹259</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-lg bg-orange-50 text-xl">🫓</div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-stone-800">Garlic Naan</p>
-                    <p className="text-xs text-stone-400">Qty: 2</p>
-                  </div>
-                  <span className="text-sm font-bold text-stone-800">₹120</span>
-                </div>
+                ))}
               </div>
 
               {/* Price breakdown */}
@@ -186,13 +217,15 @@ export default async function CheckoutPage() {
               </div>
 
               {/* Place Order Button */}
-              <button className="w-full rounded-full bg-orange-500 py-4 text-base font-bold text-white transition hover:bg-orange-600">
-                Pay ₹379 →
+              <button className="flex w-full items-center justify-center gap-2 rounded-full bg-orange-500 py-4 text-base font-bold text-white transition hover:bg-orange-600">
+                Pay ₹379
+                <ArrowRightIcon className="h-4 w-4" />
               </button>
 
               {/* Trust indicator */}
-              <p className="mt-4 text-center text-xs text-stone-400">
-                🔒 Secured by Razorpay
+              <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-xs text-stone-400">
+                <LockClosedIcon className="h-3.5 w-3.5" />
+                Secured by Razorpay
               </p>
 
               {/* Back to cart link */}

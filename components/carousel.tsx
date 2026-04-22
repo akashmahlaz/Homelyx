@@ -34,7 +34,11 @@ export async function Carousel() {
                     className="object-cover transition duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-3xl">🍽️</div>
+                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-orange-100 to-amber-100">
+                    <svg viewBox="0 0 24 24" className="h-10 w-10 text-orange-400" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.7H7.5a2 2 0 0 1-2-1.7zM9 7V5a3 3 0 0 1 6 0v2" />
+                    </svg>
+                  </div>
                 )}
               </div>
               <div className="p-3">
