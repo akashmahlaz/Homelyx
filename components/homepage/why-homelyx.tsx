@@ -46,7 +46,7 @@ export function WhyHomelyx() {
           <div className="relative lg:col-span-5">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-xl ring-1 ring-stone-200">
               <Image
-                src="https://images.unsplash.com/photo-1556909114-44e3e9399a2e?auto=format&fit=crop&w=1000&q=80"
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80"
                 alt="Indian home chef preparing fresh food in her kitchen"
                 fill
                 sizes="(min-width: 1024px) 40vw, 92vw"
