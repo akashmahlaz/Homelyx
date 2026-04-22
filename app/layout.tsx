@@ -6,6 +6,8 @@ import { WelcomeToast } from "components/welcome-toast";
 import { GeistSans } from "geist/font/sans";
 import { getCart } from "lib/shopify";
 import { baseUrl } from "lib/utils";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -24,6 +26,8 @@ export const metadata = {
   },
 };
 
+const RTL_LOCALES = new Set(["ar", "he", "fa", "ur"]);
+
 export default async function RootLayout({
   children,
 }: {
@@ -31,21 +35,26 @@ export default async function RootLayout({
 }) {
   // Don't await the fetch, pass the Promise to the context provider
   const cart = getCart();
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const dir = RTL_LOCALES.has(locale) ? "rtl" : "ltr";
 
   return (
-    <html lang="en" className={GeistSans.variable}>
-      <body className="bg-orange-50 text-stone-900 selection:bg-orange-200 selection:text-orange-900 pb-16 md:pb-0">
-        <CartProvider cartPromise={cart}>
-          <CartUIProvider>
-            <Navbar />
-            <main>
-              {children}
-              <Toaster closeButton />
-              <WelcomeToast />
-            </main>
-            <MobileBottomNav />
-          </CartUIProvider>
-        </CartProvider>
+    <html lang={locale} dir={dir} className={GeistSans.variable}>
+      <body className="bg-orange-50 pb-16 text-stone-900 selection:bg-orange-200 selection:text-orange-900 md:pb-0">
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <CartProvider cartPromise={cart}>
+            <CartUIProvider>
+              <Navbar />
+              <main>
+                {children}
+                <Toaster closeButton />
+                <WelcomeToast />
+              </main>
+              <MobileBottomNav />
+            </CartUIProvider>
+          </CartProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
