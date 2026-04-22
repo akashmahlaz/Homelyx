@@ -1,0 +1,152 @@
+import { GridTileImage } from "components/grid/tile";
+import Footer from "components/layout/footer";
+import { Gallery } from "components/product/gallery";
+import { ProductDescription } from "components/product/product-description";
+import { HIDDEN_PRODUCT_TAG } from "lib/constants";
+import { getProduct, getProductRecommendations } from "lib/shopify";
+import type { Image } from "lib/shopify/types";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
+export async function generateMetadata(props: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const params = await props.params;
+  const product = await getProduct(params.handle);
+
+  if (!product) return notFound();
+
+  const { url, width, height, altText: alt } = product.featuredImage || {};
+  const indexable = !product.tags.includes(HIDDEN_PRODUCT_TAG);
+
+  return {
+    title: product.seo.title || product.title,
+    description: product.seo.description || product.description,
+    robots: {
+      index: indexable,
+      follow: indexable,
+      googleBot: {
+        index: indexable,
+        follow: indexable,
+      },
+    },
+    openGraph: url
+      ? {
+          images: [
+            {
+              url,
+              width,
+              height,
+              alt,
+            },
+          ],
+        }
+      : null,
+  };
+}
+
+export default async function ProductPage(props: {
+  params: Promise<{ handle: string }>;
+}) {
+  const params = await props.params;
+  const product = await getProduct(params.handle);
+
+  if (!product) return notFound();
+
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description,
+    image: product.featuredImage.url,
+    offers: {
+      "@type": "AggregateOffer",
+      availability: product.availableForSale
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      priceCurrency: product.priceRange.minVariantPrice.currencyCode,
+      highPrice: product.priceRange.maxVariantPrice.amount,
+      lowPrice: product.priceRange.minVariantPrice.amount,
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productJsonLd),
+        }}
+      />
+      <div className="mx-auto max-w-7xl px-4 py-6 lg:px-6">
+        <div className="flex flex-col gap-8 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm md:p-10 lg:flex-row lg:gap-12">
+          <div className="h-full w-full basis-full lg:basis-4/6">
+            <Suspense
+              fallback={
+                <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden rounded-xl bg-orange-50" />
+              }
+            >
+              <Gallery
+                images={product.images.slice(0, 5).map((image: Image) => ({
+                  src: image.url,
+                  altText: image.altText,
+                }))}
+              />
+            </Suspense>
+          </div>
+
+          <div className="basis-full lg:basis-2/6">
+            <Suspense fallback={null}>
+              <ProductDescription product={product} />
+            </Suspense>
+          </div>
+        </div>
+        <RelatedProducts id={product.id} />
+      </div>
+      <Footer />
+    </>
+  );
+}
+
+async function RelatedProducts({ id }: { id: string }) {
+  const relatedProducts = await getProductRecommendations(id);
+
+  if (!relatedProducts.length) return null;
+
+  return (
+    <div className="py-8">
+      <h2 className="mb-6 text-2xl font-bold text-stone-900">You might also like</h2>
+      <ul className="flex w-full gap-4 overflow-x-auto pb-2 pt-1">
+        {relatedProducts.map((product) => (
+          <li
+            key={product.handle}
+            className="w-52 flex-none"
+          >
+            <Link
+              className="group block overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+              href={`/product/${product.handle}`}
+              prefetch={true}
+            >
+              <div className="relative aspect-square overflow-hidden">
+                <GridTileImage
+                  alt={product.title}
+                  src={product.featuredImage?.url}
+                  fill
+                  sizes="208px"
+                />
+              </div>
+              <div className="p-3">
+                <p className="truncate text-sm font-semibold text-stone-900">{product.title}</p>
+                <p className="mt-1 text-sm font-bold text-orange-500">
+                  ₹{product.priceRange.maxVariantPrice.amount}
+                </p>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
